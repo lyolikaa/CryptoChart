@@ -12,6 +12,9 @@ builder.Services.AddHttpClient<IDataService, DataService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:44326/");
 });
+
+builder.Services.AddBlazorBootstrap();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

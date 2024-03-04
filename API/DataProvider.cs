@@ -29,11 +29,13 @@ public class FakeDataProvider : IDataProvider
             Bids = new[]
             {
                 new OrderLine { Price = 60228.46000000, Amount = 0.01527000 },
+                new OrderLine { Price = 5555.46000000, Amount = 0.2 },
                 new OrderLine { Price = 60213.03000000, Amount = 0.00733000 }
             },
             Asks = new[]
             {
                 new OrderLine { Price = 60228.47000000, Amount = 0.10388000 },
+                new OrderLine { Price = 4444.46000000, Amount = 0.3 },
                 new OrderLine { Price = 60231.03000000, Amount = 0.09653000 }
             },
         };

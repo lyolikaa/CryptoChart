@@ -2,38 +2,68 @@
 @rendermode InteractiveServer
 
 @using API
+@using BlazorBootstrap
 @inject IDataService DataService;
 
-<PageTitle>Home</PageTitle>
-
-<h1>Test snapshot by click</h1>
-<button @onclick="GetSnapshot">fetch</button>
+<PageTitle>Order book BTC/EUR</PageTitle>
 
 <h2>Bids date</h2>
-@_snapshot.Date.ToLongDateString()
-<table class="table table-striped table-bordered">
-        <thead>
-        <tr>
-            <th>Price</th>
-            <th>Amount</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var line in _snapshot.Bids)
-        {
-            <tr>
-                <td>@line.Price</td>
-                <td>@line.Amount</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+@_snapshot.Date
+
+<BarChart @ref="bidChart" Width="200" Height="100" Class="mb-4" />
 
 @code {
+    private BarChart bidChart = default!;
+    private BarChartOptions barChartOptions = default!;
+    private ChartData chartData = default!;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSnapshot();
+        chartData = new ChartData { Labels = new List<string> {"Bids", "Asks"}, Datasets = GetDataSets() };
+        barChartOptions = new BarChartOptions { Responsive = true, Interaction = new Interaction { Mode = InteractionMode.Index } };
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await bidChart.InitializeAsync(chartData, barChartOptions);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    
+    ///transpose order lines to chart dataset
+    /// re-order 
+    private List<IChartDataset> GetDataSets()
+    {
+        var ds = new List<IChartDataset>();
+        for (int i = 0; i < _snapshot.Bids.Length; i++)
+        {
+            ds.Add(new BarChartDataset
+            {
+                Label = $"Bid Price {_snapshot.Bids[i].Price}",
+                Data = new List<double>{_snapshot.Bids[i].Amount, _snapshot.Asks[i].Amount}
+            });
+        }
+
+        return ds;
+    }
+    
+    
     private Snapshot _snapshot = new() { Asks = new[]{ new OrderLine()}, Bids = new[]{new OrderLine()}};
 
-    private async Task GetSnapshot() => _snapshot = await DataService.GetSnapshot();
+    private async Task GetSnapshot()
+    {
+        _snapshot = await DataService.GetSnapshot();
+        ReorderSnapshot();
+    }
+
+    ///rearrange bids to sell with lowest first, asks to buy with the highest first
+    private void ReorderSnapshot()
+    {
+        _snapshot.Bids = _snapshot.Bids.OrderBy(b => b.Price).ToArray();
+        _snapshot.Asks = _snapshot.Asks.OrderByDescending(b => b.Price).ToArray();
+    }
 
 }
 
