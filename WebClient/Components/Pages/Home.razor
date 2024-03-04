@@ -1,0 +1,39 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+@using API
+@inject IDataService DataService;
+
+<PageTitle>Home</PageTitle>
+
+<h1>Test snapshot by click</h1>
+<button @onclick="GetSnapshot">fetch</button>
+
+<h2>Bids date</h2>
+@_snapshot.Date.ToLongDateString()
+<table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Price</th>
+            <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var line in _snapshot.Bids)
+        {
+            <tr>
+                <td>@line.Price</td>
+                <td>@line.Amount</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+@code {
+
+    private Snapshot _snapshot = new() { Asks = new[]{ new OrderLine()}, Bids = new[]{new OrderLine()}};
+
+    private async Task GetSnapshot() => _snapshot = await DataService.GetSnapshot();
+
+}
+
