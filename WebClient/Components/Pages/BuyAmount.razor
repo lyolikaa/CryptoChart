@@ -1,0 +1,25 @@
+@rendermode InteractiveServer
+@page "/BuyAmount"
+
+<h3>BuyAmount</h3>
+
+<Switch @bind-Value="UseBidPrice" Label="Use Bid Price" />
+<b>Your Price</b>
+<i>@Price</i>
+<b>Set Amount</b>
+<InputNumber @bind-Value="Amount"></InputNumber>
+<b>Total</b>
+<i>@(Amount*Price)</i>
+
+@code {
+
+    [Parameter] 
+    public double BidPrice { get; set; }
+    [Parameter] 
+    public double AskPrice { get; set; }
+
+    double Price => UseBidPrice ? BidPrice : AskPrice;
+    double Amount { get; set; }
+
+    bool UseBidPrice;
+}

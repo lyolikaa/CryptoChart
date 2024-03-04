@@ -7,9 +7,10 @@
 
 <PageTitle>Order book BTC/EUR</PageTitle>
 
-<h2>Bids date</h2>
-@_snapshot.Date
+<BuyAmount BidPrice="_snapshot.Bids[0].Price" AskPrice="_snapshot.Asks[0].Price"></BuyAmount>
 
+<h2>Snapshot date</h2>
+@_snapshot.Date
 <BarChart @ref="bidChart" Width="200" Height="100" Class="mb-4" />
 
 @code {
