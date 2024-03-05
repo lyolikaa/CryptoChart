@@ -1,0 +1,43 @@
+@rendermode InteractiveServer
+@page "/SnapshotChart"
+@using API
+
+<BarChart @ref="bidChart" Width="200" Height="100" Class="mb-4" />
+
+@code {
+    [Parameter]
+    public OrderLine[] Bids { get; set; }
+    [Parameter]
+    public OrderLine[] Asks { get; set; }
+    
+    private BarChart bidChart = default!;
+    private BarChartOptions barChartOptions = default!;
+    private ChartData chartData = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        chartData = new ChartData { Labels = new List<string> {"Bids", "Asks"}, Datasets = GetDataSets() };
+        barChartOptions = new BarChartOptions { Responsive = true, Interaction = new Interaction { Mode = InteractionMode.Index } };
+
+        await bidChart.InitializeAsync(chartData, barChartOptions);
+        await base.OnAfterRenderAsync(firstRender);
+    }
+      
+    ///transpose order lines to chart dataset
+    private List<IChartDataset> GetDataSets()
+    {
+        var ds = new List<IChartDataset>();
+        for (int i = 0; i < Math.Min(Bids.Length, Asks.Length); i++)
+        {
+            ds.Add(new BarChartDataset
+            {
+                Label = $"Bid Price {Bids[i].Price}",
+                Data = new List<double>{Bids[i].Amount, Asks[i].Amount}
+            });
+        }
+
+        return ds;
+    }
+
+
+}

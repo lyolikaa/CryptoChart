@@ -10,19 +10,33 @@
 <BuyAmount BidPrice="_snapshot.Bids[0].Price" AskPrice="_snapshot.Asks[0].Price"></BuyAmount>
 <Switch @bind-Value="RefreshBook" Label="Refresh Book "/>
 
+<SnapshotTable
+    Bids="_snapshot.Bids"
+    Asks="_snapshot.Asks"/>
 <h2>Snapshot date</h2>
+
 @_snapshot.Date
-<BarChart @ref="bidChart" Width="200" Height="100" Class="mb-4" />
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-6">
+      <BarChart @ref="bidChart" Width="200" Height="100" />
+    </div>
+    <div class="col-lg-6">
+      <BarChart @ref="askChart" Width="200" Height="100"  />
+    </div>
+  </div>
+</div>
 
 @code {
     private BarChart bidChart = default!;
-    private BarChartOptions barChartOptions = default!;
-    private ChartData chartData = default!;
+    private BarChart askChart = default!;
+    private readonly BarChartOptions _barChartOptions = new() { Responsive = true, Interaction = new Interaction { Mode = InteractionMode.Index } };
 
     private Task? _timerTask;
     private CancellationTokenSource _cancellationToken = new();
-    private readonly PeriodicTimer _timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
-    
+    private readonly PeriodicTimer _timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
+
     private bool _refreshBook;
     public bool RefreshBook
     {
@@ -40,35 +54,32 @@
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await GetSnapshot();
-        chartData = new ChartData { Labels = new List<string> {"Bids", "Asks"}, Datasets = GetDataSets() };
-        barChartOptions = new BarChartOptions { Responsive = true, Interaction = new Interaction { Mode = InteractionMode.Index } };
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await bidChart.InitializeAsync(chartData, barChartOptions);
+            await GetSnapshot();
         }
+        var chartDataBids = new ChartData { Labels = new List<string> {"Bids"}, Datasets = GetData(_snapshot.Bids) };
+        var chartDataAsks = new ChartData { Labels = new List<string> {"Asks"}, Datasets = GetData(_snapshot.Asks) };
+
+        await bidChart.InitializeAsync(chartDataBids, _barChartOptions);
+        await askChart.InitializeAsync(chartDataAsks, _barChartOptions);
         await base.OnAfterRenderAsync(firstRender);
     }
     
     ///transpose order lines to chart dataset
-    private List<IChartDataset> GetDataSets()
+    private List<IChartDataset> GetData(OrderLine[] items)
     {
-        var ds = new List<IChartDataset>();
-        for (int i = 0; i < Math.Min(_snapshot.Bids.Length, _snapshot.Asks.Length); i++)
-        {
-            ds.Add(new BarChartDataset
+        return items.Select(t => 
+            new BarChartDataset
             {
-                Label = $"Bid Price {_snapshot.Bids[i].Price}",
-                Data = new List<double>{_snapshot.Bids[i].Amount, _snapshot.Asks[i].Amount}
-            });
-        }
-
-        return ds;
+                Label = $"Price {t.Price}", Data = new List<double> { t.Amount }
+            })
+            .Cast<IChartDataset>().ToList();
     }
     
     
@@ -97,15 +108,20 @@
     
     private async Task GetSnapshot()
     {
-        _snapshot = await DataService.GetSnapshot();
-        ReorderSnapshot();
+        var apiSnapshot = await DataService.GetSnapshot();
+        if (_snapshot.Id == apiSnapshot.Id)
+            return;
+        ReorderSnapshot(apiSnapshot);
+        StateHasChanged();
     }
 
     ///rearrange bids to sell with lowest first, asks to buy with the highest first
-    private void ReorderSnapshot()
+    private void ReorderSnapshot(Snapshot updated)
     {
-        _snapshot.Bids = _snapshot.Bids.OrderBy(b => b.Price).ToArray();
-        _snapshot.Asks = _snapshot.Asks.OrderByDescending(b => b.Price).ToArray();
+        _snapshot.Date = updated.Date;
+        _snapshot.Id = updated.Id;
+        _snapshot.Bids = updated.Bids.OrderBy(b => b.Price).ToArray();
+        _snapshot.Asks = updated.Asks.OrderByDescending(b => b.Price).ToArray();
     }
 
 }
