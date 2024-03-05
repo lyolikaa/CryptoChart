@@ -8,6 +8,7 @@
 <PageTitle>Order book BTC/EUR</PageTitle>
 
 <BuyAmount BidPrice="_snapshot.Bids[0].Price" AskPrice="_snapshot.Asks[0].Price"></BuyAmount>
+<Switch @bind-Value="RefreshBook" Label="Refresh Book "/>
 
 <h2>Snapshot date</h2>
 @_snapshot.Date
@@ -17,6 +18,27 @@
     private BarChart bidChart = default!;
     private BarChartOptions barChartOptions = default!;
     private ChartData chartData = default!;
+
+    private Task? _timerTask;
+    private CancellationTokenSource _cancellationToken = new();
+    private readonly PeriodicTimer _timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+    
+    private bool _refreshBook;
+    public bool RefreshBook
+    {
+        get => _refreshBook;
+        set
+        {
+            _refreshBook = value;
+            if (value)
+            {
+                _cancellationToken = new();
+                _timerTask = ConstantRefresh();
+            }
+            else
+                Task.Run(async () => await StopTimerAsync());
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,7 +59,7 @@
     private List<IChartDataset> GetDataSets()
     {
         var ds = new List<IChartDataset>();
-        for (int i = 0; i < _snapshot.Bids.Length; i++)
+        for (int i = 0; i < Math.Min(_snapshot.Bids.Length, _snapshot.Asks.Length); i++)
         {
             ds.Add(new BarChartDataset
             {
@@ -52,6 +74,27 @@
     
     private Snapshot _snapshot = new() { Asks = new[]{ new OrderLine()}, Bids = new[]{new OrderLine()}};
 
+    private async Task ConstantRefresh()
+    {
+        try
+        {
+            while (await _timer.WaitForNextTickAsync(_cancellationToken.Token))
+            {
+                await GetSnapshot();
+            }
+        }
+        catch (OperationCanceledException e)
+        {
+        }
+    }
+    
+    private async Task StopTimerAsync() 
+    {
+        _cancellationToken.Cancel();
+        await ConstantRefresh();
+        _cancellationToken.Dispose();
+    }
+    
     private async Task GetSnapshot()
     {
         _snapshot = await DataService.GetSnapshot();
