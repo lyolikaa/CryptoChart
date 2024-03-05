@@ -24,11 +24,15 @@ namespace DB.Migrations
 
             modelBuilder.Entity("DB.Snapshot", b =>
                 {
-                    b.Property<int>("SnapshotId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SnapshotId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("SnapshotId")
+                        .IsRequired()
+                        .HasColumnType("int");
 
                     b.Property<string>("Asks")
                         .IsRequired()

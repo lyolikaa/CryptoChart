@@ -15,8 +15,9 @@ namespace DB.Migrations
                 name: "Snapshots",
                 columns: table => new
                 {
-                    SnapshotId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    SnapshotId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Bids = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Asks = table.Column<string>(type: "nvarchar(max)", nullable: false)
