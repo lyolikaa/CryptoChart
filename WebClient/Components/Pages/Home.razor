@@ -9,7 +9,12 @@
 
 @* #OA Simplifying - It seems naturally to use top 1st from Bids/Asks  *@
 <BuyAmount BidPrice="_snapshot.Bids[0].Price" AskPrice="_snapshot.Asks[0].Price"></BuyAmount>
-<Switch @bind-Value="RefreshBook" Label="Refresh Book "/>Every @Period second
+<Switch @bind-Value="RefreshBook" Label="Refresh Book "/>
+Every @Period second
+<br>
+
+Depth of Order Book <InputNumber @bind-Value="Limit"></InputNumber>
+<br>
 
 <h2>Snapshot date</h2>
 @_snapshot.Date
@@ -33,6 +38,7 @@
 </div>
 
 @code {
+    private int Limit = 7;
     private static int Period = 3;
     private bool ShowTable;
     
@@ -70,8 +76,8 @@
         {
             await GetSnapshot();
         }
-        var chartDataBids = new ChartData { Labels = new List<string> {"Bids"}, Datasets = GetData(_snapshot.Bids) };
-        var chartDataAsks = new ChartData { Labels = new List<string> {"Asks"}, Datasets = GetData(_snapshot.Asks) };
+        var chartDataBids = new ChartData { Labels = new List<string> {"Bids prices: lowest ---> highest"}, Datasets = GetData(_snapshot.Bids) };
+        var chartDataAsks = new ChartData { Labels = new List<string> {"Asks prices: highest ---> lowest"}, Datasets = GetData(_snapshot.Asks) };
 
         await bidChart.InitializeAsync(chartDataBids, _barChartOptions);
         await askChart.InitializeAsync(chartDataAsks, _barChartOptions);
@@ -115,7 +121,7 @@
     
     private async Task GetSnapshot()
     {
-        var apiSnapshot = await DataService.GetSnapshot();
+        var apiSnapshot = await DataService.GetSnapshot(Limit);
         if (_snapshot.Id == apiSnapshot.Id)
             return;
         ReorderSnapshot(apiSnapshot);

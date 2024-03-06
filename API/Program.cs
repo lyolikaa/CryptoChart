@@ -40,10 +40,10 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/orderbook", ([FromServices] IDataProvider handler ) =>
+app.MapGet("/orderbook", ([FromQuery]int limit,[FromServices] IDataProvider handler ) =>
     {
-        var forecast = handler.GetSnapshot();
-        return forecast;
+        var orderbook = handler.GetSnapshot((byte)limit);
+        return orderbook;
     })
     .WithName("GetOrderBook")
     .WithOpenApi();

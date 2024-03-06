@@ -1,15 +1,15 @@
 @rendermode InteractiveServer
 @page "/BuyAmount"
 
-<h3>BuyAmount</h3>
+<h3>Buy Amount</h3>
 
-<Switch @bind-Value="UseBidPrice" Label="Use Bid Price"/>
-<b>Your Price (top 1st from snapshot items)</b>
+<Switch @bind-Value="UseBidPrice" Label="@(UseBidPrice ? "Bid Price (highest)" : "Ask Price (lowest)")"/>
+<b>Your Price (taking 1st row to be simple)</b>
 <i>@Price</i>
 <b>Set Amount</b>
 <InputNumber @bind-Value="Amount"></InputNumber>
 <b>Total</b>
-<i>@(Amount * Price)</i>
+<i>@((Amount * Price).ToString("0.#####"))</i>
 
 @code {
 
@@ -17,7 +17,7 @@
     [Parameter] public double AskPrice { get; set; }
 
     double Price => UseBidPrice ? BidPrice : AskPrice;
-    double Amount { get; set; }
+    double Amount { get; set; } = 0.1;
 
     bool UseBidPrice;
 }

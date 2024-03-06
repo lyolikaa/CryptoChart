@@ -10,7 +10,7 @@ public interface IDataProvider
     /// Retrieve data specifically from each provider
     /// </summary>
     /// <returns></returns>
-    Task<Snapshot> GetSnapshot();
+    Task<Snapshot> GetSnapshot(int limit);
     /// <summary>
     /// Save to DB
     /// </summary>
@@ -31,9 +31,10 @@ public class BinanceDataProvider(CryptoContext context, HttpClient httpClient) :
     private readonly CryptoContext _context = context;
     private readonly string _apiUri = "depth?symbol=BTCEUR";
     
-    public async Task<Snapshot> GetSnapshot()
+    public async Task<Snapshot> GetSnapshot(int limit = 0)
     {
-        var data = await httpClient.GetFromJsonAsync<OrderBookBinance>(_apiUri);
+        var limitStr = limit <= 0 ? "" : $"&limit={limit}";
+        var data = await httpClient.GetFromJsonAsync<OrderBookBinance>(_apiUri + limitStr);
         //TODO possibly to use Automapper
         var snapshot = new Snapshot
         {
