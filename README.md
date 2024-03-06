@@ -14,4 +14,13 @@
 
 **In-code comments**
 - TODO - possible refactor for more complex logic etc.
-- #OA - my comments f~~~~or particular implementation
+- #OA - my comments for particular implementation
+
+**Custom Configuraion**
+- API : CryptoContext, ExchangeApiBase
+- Web : APIBaseAddress 
+
+**Start solution**
+_Run from VS_
+- setup API.appsettings.CryptoContext: User Id and Password
+- configure VS/Rider Multiple Startup Projects: API + WebClient

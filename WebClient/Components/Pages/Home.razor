@@ -10,7 +10,6 @@
 @* #OA Simplifying - It seems naturally to use top 1st from Bids/Asks  *@
 <BuyAmount BidPrice="_snapshot.Bids[0].Price" AskPrice="_snapshot.Asks[0].Price"></BuyAmount>
 <Switch @bind-Value="RefreshBook" Label="Refresh Book "/>Every @Period second
-@* Every <InputNumber @bind-Value="Period"></InputNumber> second *@
 
 <h2>Snapshot date</h2>
 @_snapshot.Date
@@ -18,19 +17,19 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-6">
-            <BarChart @ref="bidChart" Width="200" Height="100" />
+            <BarChart @ref="bidChart" Width="200" Height="100"/>
         </div>
         <div class="col-lg-6">
-            <BarChart @ref="askChart" Width="200" Height="100"  />
+            <BarChart @ref="askChart" Width="200" Height="100"/>
         </div>
     </div>
 </div>
 
 <Switch @bind-Value="ShowTable" Label="Show Table (Bids order from lowest, Asks order from highest)"/>
 <div style="display:@(ShowTable ? "block" : "none")">
-<SnapshotTable  
-    Bids="_snapshot.Bids"
-    Asks="_snapshot.Asks"/>
+    <SnapshotTable
+        Bids="_snapshot.Bids"
+        Asks="_snapshot.Asks"/>
 </div>
 
 @code {
@@ -43,7 +42,7 @@
 
     private Task? _timerTask;
     private CancellationTokenSource _cancellationToken = new();
-    private readonly PeriodicTimer _timer = new PeriodicTimer(TimeSpan.FromSeconds(Period));
+    private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(Period));
 
     private bool _refreshBook;
     public bool RefreshBook

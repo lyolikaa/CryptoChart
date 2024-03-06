@@ -11,7 +11,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<DataService>();
 builder.Services.AddHttpClient<IDataService, DataService>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:44326/");
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("APIBaseAddress").Get<string>() ?? "http://localhost/");
 });
 
 builder.Services.AddBlazorBootstrap();

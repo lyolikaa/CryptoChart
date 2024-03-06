@@ -3,20 +3,18 @@
 
 <h3>BuyAmount</h3>
 
-<Switch @bind-Value="UseBidPrice" Label="Use Bid Price" />
+<Switch @bind-Value="UseBidPrice" Label="Use Bid Price"/>
 <b>Your Price (top 1st from snapshot items)</b>
 <i>@Price</i>
 <b>Set Amount</b>
 <InputNumber @bind-Value="Amount"></InputNumber>
 <b>Total</b>
-<i>@(Amount*Price)</i>
+<i>@(Amount * Price)</i>
 
 @code {
 
-    [Parameter] 
-    public double BidPrice { get; set; }
-    [Parameter] 
-    public double AskPrice { get; set; }
+    [Parameter] public double BidPrice { get; set; }
+    [Parameter] public double AskPrice { get; set; }
 
     double Price => UseBidPrice ? BidPrice : AskPrice;
     double Amount { get; set; }

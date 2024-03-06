@@ -3,43 +3,43 @@
 @using API
 
 <div class="container">
-<h3>Snapshot Table</h3>
-  <div class="row">
-      <div class="col-sm">
-          Bids
-          <table class="table table-bordered">
-              <thead>
-              <th>Price</th>
-              <th>Amount</th>
-              </thead>
-              @foreach (var bid in Bids.OrderBy(b => b.Price).ToArray())
-              {
-                  <tr>
-                      <td class="col-md-6">@bid.Price</td>
-                      <td class="col-md-6">@bid.Amount</td>
-                  </tr>
-              }
-          </table>
-      </div>
+    <h3>Snapshot Table</h3>
+    <div class="row">
+        <div class="col-sm">
+            Bids
+            <table class="table table-bordered">
+                <thead>
+                <th>Price</th>
+                <th>Amount</th>
+                </thead>
+                @foreach (var bid in Bids.OrderBy(b => b.Price).ToArray())
+                {
+                    <tr>
+                        <td class="col-md-6">@bid.Price</td>
+                        <td class="col-md-6">@bid.Amount</td>
+                    </tr>
+                }
+            </table>
+        </div>
 
-<div class="col-sm">
-Asks  
-<table class="table table-bordered">
-    <thead>
-        <th>Price</th>
-        <th>Amount</th>
-    </thead>
-        @foreach (var bid in Asks.OrderByDescending(b=>b.Price).ToArray())
-        {
-            <tr>
-                <td class="col-md-6">@bid.Price</td>
-                <td class="col-md-6">@bid.Amount</td>
-            </tr>
-        }
-</table>    
+        <div class="col-sm">
+            Asks
+            <table class="table table-bordered">
+                <thead>
+                <th>Price</th>
+                <th>Amount</th>
+                </thead>
+                @foreach (var bid in Asks.OrderByDescending(b => b.Price).ToArray())
+                {
+                    <tr>
+                        <td class="col-md-6">@bid.Price</td>
+                        <td class="col-md-6">@bid.Amount</td>
+                    </tr>
+                }
+            </table>
+        </div>
+
     </div>
-
-  </div>
 </div>
 
 

@@ -60,7 +60,7 @@ public class BinanceDataProvider(CryptoContext context, HttpClient httpClient) :
             Date = snapshot.Date,
             //#OA decided to store as string:
             //- not need to search by particular item
-            //- easy to retrieve from archive and seserialize
+            //- easy to retrieve from archive and deserialize
             Bids = JsonSerializer.Serialize(snapshot.Bids),
             Asks = JsonSerializer.Serialize(snapshot.Asks),
         };
@@ -71,40 +71,5 @@ public class BinanceDataProvider(CryptoContext context, HttpClient httpClient) :
     public async Task<bool> FindSnapshot(int id)
     {
         return await _context.Snapshots.FirstOrDefaultAsync(s => s.SnapshotId == id) != null;
-    }
-}
-
-public class FakeDataProvider : IDataProvider
-{
-    public Task<Snapshot> GetSnapshot()
-    {
-        var data = new Snapshot
-        {
-            Date = DateTime.Now,
-            Bids = new[]
-            {
-                new OrderLine { Price = 60228.46000000, Amount = 0.01527000 },
-                new OrderLine { Price = 5555.46000000, Amount = 0.2 },
-                new OrderLine { Price = 60213.03000000, Amount = 0.00733000 }
-            },
-            Asks = new[]
-            {
-                new OrderLine { Price = 60228.47000000, Amount = 0.10388000 },
-                new OrderLine { Price = 4444.46000000, Amount = 0.3 },
-                new OrderLine { Price = 60231.03000000, Amount = 0.09653000 }
-            },
-        };
-
-        return Task.FromResult(data);
-    }
-
-    Task<int> IDataProvider.StoreSnapshot(Snapshot snapshot)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> FindSnapshot(int id)
-    {
-        throw new NotImplementedException();
     }
 }

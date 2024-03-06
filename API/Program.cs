@@ -10,7 +10,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<CryptoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CryptoContext")));
-// builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddScoped<IDataProvider, BinanceDataProvider>();
 builder.Services.AddHttpClient<IDataProvider, BinanceDataProvider>(client =>
@@ -24,7 +23,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    // app.UseMigrationsEndPoint();
 }
 else
 {
@@ -38,7 +36,6 @@ using (var scope = app.Services.CreateScope())
 
     var context = services.GetRequiredService<CryptoContext>();
     context.Database.EnsureCreated();
-    // DbInitializer.Initialize(context);
 }
 
 app.UseHttpsRedirection();
