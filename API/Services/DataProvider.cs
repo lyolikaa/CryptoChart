@@ -1,5 +1,4 @@
 using System.Text.Json;
-using AutoMapper;
 using DB;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,21 +6,35 @@ namespace API;
 
 public interface IDataProvider
 {
+    /// <summary>
+    /// Retrieve data specifically from each provider
+    /// </summary>
+    /// <returns></returns>
     Task<Snapshot> GetSnapshot();
+    /// <summary>
+    /// Save to DB
+    /// </summary>
+    /// <param name="snapshot"></param>
+    /// <returns></returns>
     Task<int> StoreSnapshot(Snapshot snapshot);
-
+    /// <summary>
+    /// Check for existing snapshot
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     Task<bool> FindSnapshot(int id);
 }
 
-public class BinanceDataProvider(CryptoContext context, HttpClient httpClient, IMapper mapper) : IDataProvider
+//TODO possibly to use generics for DTO models, API path etc. 
+public class BinanceDataProvider(CryptoContext context, HttpClient httpClient) : IDataProvider
 {
-    private CryptoContext _context = context;
+    private readonly CryptoContext _context = context;
     private readonly string _apiUri = "depth?symbol=BTCEUR";
-    private readonly IMapper _mapper = mapper;
     
     public async Task<Snapshot> GetSnapshot()
     {
-        var data = await httpClient.GetFromJsonAsync<OrderBook>(_apiUri);
+        var data = await httpClient.GetFromJsonAsync<OrderBookBinance>(_apiUri);
+        //TODO possibly to use Automapper
         var snapshot = new Snapshot
         {
             Date = DateTime.Now,
@@ -37,8 +50,6 @@ public class BinanceDataProvider(CryptoContext context, HttpClient httpClient, I
         }
 
         return snapshot;
-        
-        return _mapper.Map<Snapshot>(data);
     }
 
     public async Task<int> StoreSnapshot(Snapshot snapshot)
@@ -47,6 +58,9 @@ public class BinanceDataProvider(CryptoContext context, HttpClient httpClient, I
         {
             SnapshotId = snapshot.Id,
             Date = snapshot.Date,
+            //#OA decided to store as string:
+            //- not need to search by particular item
+            //- easy to retrieve from archive and seserialize
             Bids = JsonSerializer.Serialize(snapshot.Bids),
             Asks = JsonSerializer.Serialize(snapshot.Asks),
         };

@@ -1,5 +1,4 @@
 using API;
-using AutoMapper;
 using DB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +12,6 @@ builder.Services.AddDbContext<CryptoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CryptoContext")));
 // builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddAutoMapper(typeof(Program));
-
 builder.Services.AddScoped<IDataProvider, BinanceDataProvider>();
 builder.Services.AddHttpClient<IDataProvider, BinanceDataProvider>(client =>
 {
@@ -23,7 +20,6 @@ builder.Services.AddHttpClient<IDataProvider, BinanceDataProvider>(client =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

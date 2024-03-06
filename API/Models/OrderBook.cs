@@ -1,6 +1,9 @@
 namespace API;
 
-public class OrderBook
+/// <summary>
+/// Use for retrieve data from Binance API
+/// </summary>
+public class OrderBookBinance
 {
     public int LastUpdateId { get; set; }
     public DateTime Date { get; set; }
@@ -8,7 +11,10 @@ public class OrderBook
     public string[][] Asks { get; set; }
 }
 
-public class Snapshot()
+/// <summary>
+/// DTO model, use on API and Client
+/// </summary>
+public class Snapshot
 {
     public int Id { get; set; }
     public DateTime Date { get; set; }
