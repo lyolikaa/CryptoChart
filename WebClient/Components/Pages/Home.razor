@@ -7,28 +7,17 @@
 <PageTitle>Order book BTC/EUR</PageTitle>
 
 @* #OA Simplifying - It seems naturally to use top 1st from Bids/Asks  *@
-<BuyAmount Bids="_snapshot.Bids" Asks="_snapshot.Asks"></BuyAmount>
+<BuyAmount Asks="_snapshot.Asks"></BuyAmount>
 
-<div class="container">
-    <div class="row">
-        <div class="col-sm-2">
-            <Switch @bind-Value="RefreshBook" Label="Continuous Refresh"/>
-        </div>
-        <div class="col-sm-2">
-            Every @Period second
-        </div>
-        <div class="col-sm-2">
-            <button class="btn btn-primary" @onclick="() => GetSnapshot()">Refresh book once</button>
-        </div>
-        <div class="col-sm-2">
-            Depth of Order Book <InputNumber @bind-Value="Limit"></InputNumber>
-        </div>
-    </div>
-</div>
+<h4>Retrieve data</h4>
+<Switch @bind-Value="RefreshBook" Label="Continuous Refresh"/>
+Every @Period second
+<button class="btn btn-primary" @onclick="() => GetSnapshot()">Refresh book once</button>
+Depth of Order Book on chart<InputNumber @bind-Value="Limit"></InputNumber>
 
 <br>
 
-<h2>Snapshot date</h2>
+<h3>Snapshot date</h3>
 @_snapshot.Date
 
 <div class="container">
@@ -84,8 +73,16 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var chartDataBids = new ChartData { Labels = new List<string> {"Bids prices: lowest ---> highest"}, Datasets = GetData(_snapshot.Bids) };
-        var chartDataAsks = new ChartData { Labels = new List<string> {"Asks prices: highest ---> lowest"}, Datasets = GetData(_snapshot.Asks) };
+        var chartDataBids = new ChartData
+        {
+            Labels = new List<string> {"Bids prices: lowest ---> highest"}, 
+            Datasets = GetData(_snapshot.Bids.Take(Limit).ToArray())
+        };
+        var chartDataAsks = new ChartData
+        {
+            Labels = new List<string> {"Asks prices: highest ---> lowest"}, 
+            Datasets = GetData(_snapshot.Asks.Take(Limit).ToArray())
+        };
 
         if (firstRender)
         {
@@ -98,16 +95,15 @@
             await bidChart.UpdateAsync(chartDataBids, _barChartOptions);
             await askChart.UpdateAsync(chartDataAsks, _barChartOptions);
         }
-        // await base.OnAfterRenderAsync(firstRender);
     }
     
-    ///transpose order lines to chart dataset
+    //#OA transpose order lines to chart dataset
     private List<IChartDataset> GetData(OrderLine[] items)
     {
         return items.Select(t => 
             new BarChartDataset
             {
-                Label = $"Price {t.Price}", Data = new List<double> { t.Amount }
+                Label = $"{t.Price}", Data = new List<double> { t.Amount }
             })
             .Cast<IChartDataset>().ToList();
     }
@@ -138,7 +134,7 @@
     
     private async Task GetSnapshot()
     {
-        var apiSnapshot = await DataService.GetSnapshot(Limit);
+        var apiSnapshot = await DataService.GetSnapshot();
         if (_snapshot.Id == apiSnapshot.Id)
             return;
         ReorderSnapshot(apiSnapshot);
@@ -154,6 +150,5 @@
         _snapshot.Bids = updated.Bids.OrderByDescending(b => b.Price).ToArray();
         _snapshot.Asks = updated.Asks.OrderBy(b => b.Price).ToArray();
     }
-
 }
 

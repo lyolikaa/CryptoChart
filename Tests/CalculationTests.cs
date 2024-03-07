@@ -39,5 +39,5 @@ public class CalculationTests
     public void OrderAmountTooMuch(OrderLine[] asks)
     {
         var calc = _dataService.GetTotalPurchase(OrderBigAmount.Amount, asks);
-        Assert.AreEqual(calc, 0);
+        Assert.AreEqual(calc, -1);
     }}
