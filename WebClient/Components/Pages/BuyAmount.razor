@@ -1,34 +1,37 @@
 @rendermode InteractiveServer
 @page "/BuyAmount"
 @using API
+@inject IDataService DataService;
+
 
 <h3>Buy Amount</h3>
 
-@* <Switch @bind-Value="UseBidPrice" Label="@(UseBidPrice ? "Bid Price (highest)" : "Ask Price (lowest)")"/> *@
+<button class="btn btn-primary" @onclick="UseAsk1st">Use Asks top 1st</button>
 <b>Your Ask Price</b>
 <InputNumber @bind-Value="AskPrice.Price"></InputNumber>
 <b>Set Amount</b>
 <InputNumber @bind-Value="AskPrice.Amount"></InputNumber>
 <b>Calculated Total</b>
-<i>@((AskPrice.Amount * AskPrice.Price).ToString("0.#####"))</i>
+<i>@(DataService.TotalPurchaseString(DataService.GetTotalPurchase(AskPrice, Asks)))</i>
 
 @code {
 
     protected override void OnParametersSet()
     {
         if (AskPrice?.Price == 0 && AskPrice?.Amount == 0)
-            AskPrice = new OrderLine{ Amount = Asks[0].Amount, Price = Asks[0].Price};
+            UseAsk1st();
         base.OnParametersSet();
     }
 
+    private void UseAsk1st()
+    {
+        AskPrice = new OrderLine{ Amount = Asks[0].Amount, Price = Asks[0].Price};
+    }
+    
     [Parameter]
     public OrderLine[] Bids { get; set; }
     [Parameter]
     public OrderLine[] Asks { get; set; }
 
     OrderLine AskPrice = new ();
-    // double Price => UseBidPrice ? b : AskPrice;
-    // double Amount { get; set; } = 0.1;
-
-    bool UseBidPrice;
 }

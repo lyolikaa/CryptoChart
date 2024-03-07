@@ -145,14 +145,14 @@
         StateHasChanged();
     }
 
-    //#OA rearrange bids to sell with lowest first, asks to buy with the highest first
+    //#OA rearrange bids to sell with highest first, asks to buy with the lowest first
     //it seems naturally to use top 1st item to user's purchase
     private void ReorderSnapshot(Snapshot updated)
     {
         _snapshot.Date = updated.Date;
         _snapshot.Id = updated.Id;
-        _snapshot.Bids = updated.Bids.OrderBy(b => b.Price).ToArray();
-        _snapshot.Asks = updated.Asks.OrderByDescending(b => b.Price).ToArray();
+        _snapshot.Bids = updated.Bids.OrderByDescending(b => b.Price).ToArray();
+        _snapshot.Asks = updated.Asks.OrderBy(b => b.Price).ToArray();
     }
 
 }

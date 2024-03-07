@@ -12,7 +12,7 @@
                 <th>Price</th>
                 <th>Amount</th>
                 </thead>
-                @foreach (var bid in Bids.OrderBy(b => b.Price).ToArray())
+                @foreach (var bid in Bids.OrderByDescending(b => b.Price).ToArray())
                 {
                     <tr>
                         <td class="col-lg">@bid.Price</td>
@@ -29,7 +29,7 @@
                 <th>Price</th>
                 <th>Amount</th>
                 </thead>
-                @foreach (var bid in Asks.OrderByDescending(b => b.Price).ToArray())
+                @foreach (var bid in Asks.OrderBy(b => b.Price).ToArray())
                 {
                     <tr>
                         <td class="col-lg-4">@bid.Price</td>
