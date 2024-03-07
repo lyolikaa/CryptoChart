@@ -1,23 +1,34 @@
 @rendermode InteractiveServer
 @page "/BuyAmount"
+@using API
 
 <h3>Buy Amount</h3>
 
-<Switch @bind-Value="UseBidPrice" Label="@(UseBidPrice ? "Bid Price (highest)" : "Ask Price (lowest)")"/>
-<b>Your Price (taking 1st row to be simple)</b>
-<i>@Price</i>
+@* <Switch @bind-Value="UseBidPrice" Label="@(UseBidPrice ? "Bid Price (highest)" : "Ask Price (lowest)")"/> *@
+<b>Your Ask Price</b>
+<InputNumber @bind-Value="AskPrice.Price"></InputNumber>
 <b>Set Amount</b>
-<InputNumber @bind-Value="Amount"></InputNumber>
-<b>Total</b>
-<i>@((Amount * Price).ToString("0.#####"))</i>
+<InputNumber @bind-Value="AskPrice.Amount"></InputNumber>
+<b>Calculated Total</b>
+<i>@((AskPrice.Amount * AskPrice.Price).ToString("0.#####"))</i>
 
 @code {
 
-    [Parameter] public double BidPrice { get; set; }
-    [Parameter] public double AskPrice { get; set; }
+    protected override void OnParametersSet()
+    {
+        if (AskPrice?.Price == 0 && AskPrice?.Amount == 0)
+            AskPrice = new OrderLine{ Amount = Asks[0].Amount, Price = Asks[0].Price};
+        base.OnParametersSet();
+    }
 
-    double Price => UseBidPrice ? BidPrice : AskPrice;
-    double Amount { get; set; } = 0.1;
+    [Parameter]
+    public OrderLine[] Bids { get; set; }
+    [Parameter]
+    public OrderLine[] Asks { get; set; }
+
+    OrderLine AskPrice = new ();
+    // double Price => UseBidPrice ? b : AskPrice;
+    // double Amount { get; set; } = 0.1;
 
     bool UseBidPrice;
 }

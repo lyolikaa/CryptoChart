@@ -7,7 +7,7 @@
 <PageTitle>Order book BTC/EUR</PageTitle>
 
 @* #OA Simplifying - It seems naturally to use top 1st from Bids/Asks  *@
-<BuyAmount BidPrice="_snapshot.Bids[0].Price" AskPrice="_snapshot.Asks[0].Price"></BuyAmount>
+<BuyAmount Bids="_snapshot.Bids" Asks="_snapshot.Asks"></BuyAmount>
 
 <div class="container">
     <div class="row">
@@ -98,7 +98,7 @@
             await bidChart.UpdateAsync(chartDataBids, _barChartOptions);
             await askChart.UpdateAsync(chartDataAsks, _barChartOptions);
         }
-        await base.OnAfterRenderAsync(firstRender);
+        // await base.OnAfterRenderAsync(firstRender);
     }
     
     ///transpose order lines to chart dataset
@@ -111,8 +111,8 @@
             })
             .Cast<IChartDataset>().ToList();
     }
-    
-    
+
+
     private Snapshot _snapshot = new() { Asks = new[]{ new OrderLine()}, Bids = new[]{new OrderLine()}};
 
     private async Task ConstantRefresh()
