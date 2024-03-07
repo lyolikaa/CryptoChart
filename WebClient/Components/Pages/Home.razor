@@ -2,18 +2,30 @@
 @rendermode InteractiveServer
 
 @using API
-@using BlazorBootstrap
 @inject IDataService DataService;
 
 <PageTitle>Order book BTC/EUR</PageTitle>
 
 @* #OA Simplifying - It seems naturally to use top 1st from Bids/Asks  *@
 <BuyAmount BidPrice="_snapshot.Bids[0].Price" AskPrice="_snapshot.Asks[0].Price"></BuyAmount>
-<Switch @bind-Value="RefreshBook" Label="Refresh Book "/>
-Every @Period second
-<br>
 
-Depth of Order Book <InputNumber @bind-Value="Limit"></InputNumber>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+            <Switch @bind-Value="RefreshBook" Label="Continuous Refresh"/>
+        </div>
+        <div class="col-sm-2">
+            Every @Period second
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary" @onclick="() => GetSnapshot()">Refresh book once</button>
+        </div>
+        <div class="col-sm-2">
+            Depth of Order Book <InputNumber @bind-Value="Limit"></InputNumber>
+        </div>
+    </div>
+</div>
+
 <br>
 
 <h2>Snapshot date</h2>
@@ -44,7 +56,10 @@ Depth of Order Book <InputNumber @bind-Value="Limit"></InputNumber>
     
     private BarChart bidChart = default!;
     private BarChart askChart = default!;
-    private readonly BarChartOptions _barChartOptions = new() { Responsive = true, Interaction = new Interaction { Mode = InteractionMode.Index } };
+    private readonly BarChartOptions _barChartOptions = new()
+    {
+        Responsive = true, Interaction = new Interaction { Mode = InteractionMode.Dataset },
+    };
 
     private Task? _timerTask;
     private CancellationTokenSource _cancellationToken = new();
@@ -67,20 +82,22 @@ Depth of Order Book <InputNumber @bind-Value="Limit"></InputNumber>
         }
     }
 
-    protected override void OnInitialized()
-    {
-    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            await GetSnapshot();
-        }
         var chartDataBids = new ChartData { Labels = new List<string> {"Bids prices: lowest ---> highest"}, Datasets = GetData(_snapshot.Bids) };
         var chartDataAsks = new ChartData { Labels = new List<string> {"Asks prices: highest ---> lowest"}, Datasets = GetData(_snapshot.Asks) };
 
-        await bidChart.InitializeAsync(chartDataBids, _barChartOptions);
-        await askChart.InitializeAsync(chartDataAsks, _barChartOptions);
+        if (firstRender)
+        {
+            await GetSnapshot();
+            await bidChart.InitializeAsync(chartDataBids, _barChartOptions);
+            await askChart.InitializeAsync(chartDataAsks, _barChartOptions);
+        }
+        else
+        {
+            await bidChart.UpdateAsync(chartDataBids, _barChartOptions);
+            await askChart.UpdateAsync(chartDataAsks, _barChartOptions);
+        }
         await base.OnAfterRenderAsync(firstRender);
     }
     
