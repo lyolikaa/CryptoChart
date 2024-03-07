@@ -6,37 +6,34 @@ public interface IDataService
 {
     Task<Snapshot> GetSnapshot(int limit);
 
-    double GetTotalPurchase(OrderLine baseOrder, OrderLine[] asks);
+    double GetTotalPurchase(double amount, OrderLine[] asks);
     string TotalPurchaseString(double value);
 }
 public class DataService(HttpClient httpClient): IDataService
 {
-    public async Task<Snapshot> GetSnapshot(int limit)
+    public async Task<Snapshot> GetSnapshot(int limit = 0)
     {
         return await httpClient.GetFromJsonAsync<Snapshot>($"orderbook?limit={limit}");
     }
 
-    public double GetTotalPurchase(OrderLine baseOrder, OrderLine[] asks)
+    public double GetTotalPurchase(double amount, OrderLine[] asks)
     {
         var i = 0;
         double totalAmount = 0;
         double totalCost = 0;
-        var availableByPrice = asks
-            .Where(o => o.Price >= baseOrder.Price)
+        var sortedByPrice = asks
             .OrderBy(o=>o.Price).ToArray();
-        //#OA Order price too much for Ask lines
-        if (!availableByPrice.Any())
-            return -1;
+
         do
         {
-            totalAmount += availableByPrice[i].Amount;
-            totalCost += CalcLineTotal(availableByPrice[i]);
+            totalAmount += sortedByPrice[i].Amount;
+            totalCost += CalcLineTotal(sortedByPrice[i]);
 
             i++;
-        } while (totalAmount < baseOrder.Amount && i < availableByPrice.Length);
+        } while (totalAmount < amount && i < sortedByPrice.Length);
 
         //#OA cannot reach desired amount with current snapshot
-        if (totalAmount < baseOrder.Amount)
+        if (totalAmount < amount)
             totalCost = 0;
 
         return totalCost;
@@ -52,8 +49,6 @@ public class DataService(HttpClient httpClient): IDataService
                 return value.ToString("0.#####");
             case 0:
                 return "Not enough line to reach Amount";
-            case -1:
-                return "Order Price to low for available Asks";
             default: return value.ToString();
         }
     }

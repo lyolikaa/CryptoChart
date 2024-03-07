@@ -5,7 +5,7 @@ namespace API;
 /// </summary>
 public class OrderBookBinance
 {
-    public int LastUpdateId { get; set; }
+    public ulong LastUpdateId { get; set; }
     public DateTime Date { get; set; }
     public string[][] Bids { get; set; }
     public string[][] Asks { get; set; }
@@ -16,7 +16,7 @@ public class OrderBookBinance
 /// </summary>
 public class Snapshot
 {
-    public int Id { get; set; }
+    public ulong Id { get; set; }
     public DateTime Date { get; set; }
     public OrderLine[] Bids { get; set; }
     public OrderLine[] Asks { get; set; }

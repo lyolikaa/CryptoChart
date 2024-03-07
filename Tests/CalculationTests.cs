@@ -29,22 +29,15 @@ public class CalculationTests
     [TestCaseSource(nameof(Data))]
     public void CalculateCorrectly(OrderLine[] asks)
     {
-        var calc = _dataService.GetTotalPurchase(BaseOrder, asks);
+        var calc = _dataService.GetTotalPurchase(BaseOrder.Amount, asks);
         Assert.AreEqual(calc, 22);
     }
     
-    [Theory]
-    [TestCaseSource(nameof(Data))]
-    public void OrderPriceTooMuch(OrderLine[] asks)
-    {
-        var calc = _dataService.GetTotalPurchase(OrderBigPrice, asks);
-        Assert.AreEqual(calc, -1);
-    }
-    
+   
     [Theory]
     [TestCaseSource(nameof(Data))]
     public void OrderAmountTooMuch(OrderLine[] asks)
     {
-        var calc = _dataService.GetTotalPurchase(OrderBigAmount, asks);
+        var calc = _dataService.GetTotalPurchase(OrderBigAmount.Amount, asks);
         Assert.AreEqual(calc, 0);
     }}

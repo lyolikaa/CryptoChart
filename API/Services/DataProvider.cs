@@ -22,7 +22,7 @@ public interface IDataProvider
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<bool> FindSnapshot(int id);
+    Task<bool> FindSnapshot(ulong id);
 }
 
 //TODO possibly to use generics for DTO models, API path etc. 
@@ -69,7 +69,7 @@ public class BinanceDataProvider(CryptoContext context, HttpClient httpClient) :
         return await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> FindSnapshot(int id)
+    public async Task<bool> FindSnapshot(ulong id)
     {
         return await _context.Snapshots.FirstOrDefaultAsync(s => s.SnapshotId == id) != null;
     }
