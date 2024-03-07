@@ -22,8 +22,12 @@ public class Snapshot
     public OrderLine[] Asks { get; set; }
 }
 
-public class OrderLine
+public class OrderLine(double price, double amount)
 {
-    public double Price { get; set; }
-    public double Amount { get; set; }
+    public OrderLine() : this(0, 0)
+    {
+        
+    }
+    public double Price { get; set; } = price;
+    public double Amount { get; set; } = amount;
 }

@@ -40,9 +40,9 @@ public class BinanceDataProvider(CryptoContext context, HttpClient httpClient) :
         {
             Date = DateTime.Now,
             Bids = data.Bids.Select(b => 
-                new OrderLine{ Price = double.Parse(b[0]), Amount = double.Parse(b[1])}).ToArray(),
+                new OrderLine( double.Parse(b[0]), double.Parse(b[1]))).ToArray(),
             Asks = data.Asks.Select(b => 
-                new OrderLine{ Price = double.Parse(b[0]), Amount = double.Parse(b[1])}).ToArray(),
+                new OrderLine(double.Parse(b[0]), double.Parse(b[1]))).ToArray(),
             Id = data.LastUpdateId
         };
         if (!await FindSnapshot(data.LastUpdateId))

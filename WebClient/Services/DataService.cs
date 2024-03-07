@@ -24,6 +24,7 @@ public class DataService(HttpClient httpClient): IDataService
         var availableByPrice = asks
             .Where(o => o.Price >= baseOrder.Price)
             .OrderBy(o=>o.Price).ToArray();
+        //#OA Order price too much for Ask lines
         if (!availableByPrice.Any())
             return -1;
         do
@@ -34,7 +35,7 @@ public class DataService(HttpClient httpClient): IDataService
             i++;
         } while (totalAmount < baseOrder.Amount && i < availableByPrice.Length);
 
-        //#OA marker for UI - cannot reach desired amount with current snapshot
+        //#OA cannot reach desired amount with current snapshot
         if (totalAmount < baseOrder.Amount)
             totalCost = 0;
 

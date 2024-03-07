@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClient", "WebClient\WebC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DB", "DB\DB.csproj", "{44F4251C-AF51-4303-B1BA-5FA1A016354D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{7003264C-553A-4CAD-A20D-C02622E5FA03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,17 @@ Global
 		{44F4251C-AF51-4303-B1BA-5FA1A016354D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44F4251C-AF51-4303-B1BA-5FA1A016354D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44F4251C-AF51-4303-B1BA-5FA1A016354D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A8F369F-7D43-431E-A122-2DBE6BC71019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A8F369F-7D43-431E-A122-2DBE6BC71019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A8F369F-7D43-431E-A122-2DBE6BC71019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A8F369F-7D43-431E-A122-2DBE6BC71019}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2A06515-0E1F-4E94-9797-2F77335E9060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2A06515-0E1F-4E94-9797-2F77335E9060}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2A06515-0E1F-4E94-9797-2F77335E9060}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2A06515-0E1F-4E94-9797-2F77335E9060}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7003264C-553A-4CAD-A20D-C02622E5FA03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7003264C-553A-4CAD-A20D-C02622E5FA03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7003264C-553A-4CAD-A20D-C02622E5FA03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7003264C-553A-4CAD-A20D-C02622E5FA03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

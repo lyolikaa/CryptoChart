@@ -11,6 +11,7 @@
 -- SnapshotChart - Chart component
 -- SnapshotTable - use it to check snapshot data
 - DB level - use of EF, Code first
+- Tests - Unit tests for calculations
 
 **In-code comments**
 - TODO - possible refactor for more complex logic etc.
