@@ -11,7 +11,7 @@ public class CryptoContext : DbContext
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Data Source=(local)\\SQLExpress;Initial Catalog=crypto;Persist Security Info=True;User ID=sa;Password=saaav23;trusted_connection=true;encrypt=false");
+        optionsBuilder.UseSqlServer("Data Source=(local)\\SQLExpress;Initial Catalog=crypto;Persist Security Info=True;User ID=sa;Password=***;trusted_connection=true;encrypt=false");
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

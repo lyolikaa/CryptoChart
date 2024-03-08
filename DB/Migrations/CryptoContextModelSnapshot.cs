@@ -30,9 +30,9 @@ namespace DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("SnapshotId")
+                    b.Property<decimal>("SnapshotId")
                         .IsRequired()
-                        .HasColumnType("int");
+                        .HasColumnType("decimal(20,0)");
 
                     b.Property<string>("Asks")
                         .IsRequired()

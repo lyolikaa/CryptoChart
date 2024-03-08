@@ -17,7 +17,7 @@ namespace DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SnapshotId = table.Column<int>(type: "int", nullable: false),
+                    SnapshotId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Bids = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Asks = table.Column<string>(type: "nvarchar(max)", nullable: false)
