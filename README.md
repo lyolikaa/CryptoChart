@@ -8,7 +8,6 @@
 - WebClient - Blazor Web App
 -- Home - main page, some comment are on UI/markup
 -- BuyAmount - component for user purchase 
--- SnapshotChart - Chart component
 -- SnapshotTable - use it to check snapshot data
 - DB level - use of EF, Code first
 - Tests - Unit tests for calculations
